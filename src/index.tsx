@@ -3,11 +3,23 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache } from '@apollo/client';
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      apikey: "9677bbd3-4b5b-4a2f-a085-201771d6ad9c"
+    }
+  }));
+
+  return forward(operation);
+})
 
 const client = new ApolloClient({
   uri: 'https://v4-0-dot-livitay.appspot.com/graphql',
   cache: new InMemoryCache(),
+  link: authMiddleware,
 });
 
 const root = ReactDOM.createRoot(
