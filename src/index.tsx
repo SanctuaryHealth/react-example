@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache, HttpLink, concat } from '@apollo/client';
+
+const httpLink = new HttpLink({ uri: 'https://v4-0-dot-livitay.appspot.com/graphql' })
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
@@ -17,9 +19,8 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 })
 
 const client = new ApolloClient({
-  uri: 'https://v4-0-dot-livitay.appspot.com/graphql',
   cache: new InMemoryCache(),
-  link: authMiddleware,
+  link: concat(authMiddleware, httpLink),
 });
 
 const root = ReactDOM.createRoot(
